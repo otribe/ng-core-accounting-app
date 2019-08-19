@@ -1,4 +1,4 @@
-# Accounting web application | Angular 7 | .Net core 2.2 Web API | Sql Server | MySQL
+# Accounting web application | Angular 7 | .Net core 2 Web API | Sql Server | MySQL
 
 Accounting application developed using Angular 7 consuming RESTful Web API Core 2 service.
 
