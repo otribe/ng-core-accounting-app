@@ -1,0 +1,7 @@
+{
+    "data": [
+        {"firstName":"Sonu","lastName":"Singh","userName":"admin","password":"admin","dateCreated":"2019-02-28T00:00:00","isActive":true,"id":1},
+        {"firstName":"Dav","lastName":"Singh","userName":"dav","password":"dav","dateCreated":"2019-02-28T00:00:00","isActive":true,"id":2},
+        {"firstName":"sonu","lastName":"Singh","userName":"sonu","password":"ss","dateCreated":"2019-02-28T00:00:00","isActive":true,"id":3}
+    ]
+}

@@ -1,0 +1,276 @@
+<div class="content-section implementation">
+    <p-table #dt [columns]="selectedColumns" [value]="users" [columns]="cols" selectionMode="single" [(selection)]="selectedUser"
+        (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10" [resizableColumns]="true" [reorderableColumns]="true"
+        [responsive]="true">
+        <ng-template pTemplate="caption">
+            List of User
+        </ng-template>
+
+        <ng-template pTemplate="caption">
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary" iconPos="left" pButton icon="fa fa-plus" (click)="showDialogToAdd()" label="Create New"></button>
+                </div>
+                <div class="col-md-3">
+                    <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columns selected"
+                        [style]="{minWidth: '200px'}" defaultLabel="Choose Columns"></p-multiSelect>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Export To CSV" (click)="dt.exportCSV()" style="float:left"></button>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                    <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        style="width:200px">
+                </div>
+            </div>
+        </ng-template>
+
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn pReorderableColumn>
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+            </tr>
+            <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+                    <input pInputText type="text" [placeholder]="col.field" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)"
+                        [value]="dt.filters[col.field]?.value">
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData">
+                <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog header="User" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [style]="{width: '900px'}">
+
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit(userForm.value)">
+
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+
+                <input pInputText type="hidden" formControlName="id" [(ngModel)]="user.id" />
+  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="userName"> User Name* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="userName" formControlName="userName" [(ngModel)]="user.userName==null?'':user.userName" placeholder="User Name" />
+                                <p-message severity="error" text="UserName is required" *ngIf="!userForm.controls['userName'].valid&&userForm.controls['userName'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="password"> Password* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="password" formControlName="password" [(ngModel)]="user.password==null?'':user.password" placeholder="Password" />
+                                <p-message severity="error" text="Password is required" *ngIf="!userForm.controls['password'].valid&&userForm.controls['password'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="firstName"> First Name* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="firstName" formControlName="firstName" [(ngModel)]="user.firstName==null?'':user.firstName" placeholder="First Name" />
+                                <p-message severity="error" text="FirstName is required" *ngIf="!userForm.controls['firstName'].valid&&userForm.controls['firstName'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="lastName"> Last Name :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="lastName" formControlName="lastName" [(ngModel)]="user.lastName==null?'':user.lastName" placeholder="Last Name" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="dateOfBirth"> Date Of Birth :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-inputMask mask="9999/99/99" id="dateOfBirth" formControlName="dateOfBirth" [(ngModel)]="user.dateOfBirth==null?'':user.dateOfBirth" placeholder="yyyy/mm/dd" slotChar="yyyy/mm/dd"></p-inputMask>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="profilePicture"> Profile Picture:</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input type="hidden" #profilePicture7 formControlName="profilePicture7" [(ngModel)]="user.profilePicture" />
+                                <input type="file" #profilePicture (change)="uploadFile(profilePicture.files)" formControlName="profilePicture" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="email"> Email* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="email" formControlName="email" [(ngModel)]="user.email==null?'':user.email" placeholder="Email" />
+                                <p-message severity="error" text="Email is required" *ngIf="!userForm.controls['email'].valid&&userForm.controls['email'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="contactNumber"> Contact Number :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="contactNumber" formControlName="contactNumber" [(ngModel)]="user.contactNumber==null?'':user.contactNumber" placeholder="Contact Number" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="address"> Address :</label>
+                            </div>
+                            <div class="ui-grid-col-6"> 
+                                <textarea #address formControlName="address" [(ngModel)]="user.address==null?'':user.address"></textarea>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="emailConfirmed"> Email Confirmed :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="emailConfirmed" id="emailConfirmed" [(ngModel)]="user.emailConfirmed==null?'':user.emailConfirmed" binary="true"></p-checkbox>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="about"> About :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-editor id="about" formControlName="about" [(ngModel)]="user.about==null?'':user.about" [style]="{'height':'120px'}"></p-editor>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="lastLogoutTime"> Last Logout Time :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-inputMask mask="9999/99/99" id="lastLogoutTime" formControlName="lastLogoutTime" [(ngModel)]="user.lastLogoutTime==null?'':user.lastLogoutTime" placeholder="yyyy/mm/dd" slotChar="yyyy/mm/dd"></p-inputMask>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-10">
+                                <input pInputText type="hidden" formControlName="addedBy" [(ngModel)]="user.addedBy==null?'':user.addedBy" />
+                            </div> 
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-10">
+                                <input pInputText type="hidden" formControlName="dateAdded" [(ngModel)]="user.dateAdded==null?'':user.dateAdded" />
+                            </div> 
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-10">
+                                <input pInputText type="hidden" formControlName="modifiedBy" [(ngModel)]="user.modifiedBy==null?'':user.modifiedBy" />
+                            </div> 
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-10">
+                                <input pInputText type="hidden" formControlName="dateModied" [(ngModel)]="user.dateModied==null?'':user.dateModied" />
+                            </div> 
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="changePasswordCode"> Change Password Code :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="changePasswordCode" formControlName="changePasswordCode" [(ngModel)]="user.changePasswordCode==null?'':user.changePasswordCode" placeholder="Change Password Code" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="roleId"> Role Id* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-dropdown [options]="RoleList" #roleId formControlName="roleId" [(ngModel)]="user.roleId==null?'':user.roleId" placeholder="--Select--" [style]="{'width':'200px'}" filter="true">
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span style="vertical-align:middle; margin-left: .5em">{{item.label}}</span>
+                                    </ng-template>
+                                    <ng-template let-user pTemplate="item">
+                                        <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                                            <div style="font-size:14px;float:left;margin-top:4px">{{user.label}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                                <p-message severity="error" text="RoleId is required" *ngIf="!userForm.controls['roleId'].valid&&userForm.controls['roleId'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="isActive"> Is Active* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="isActive" id="isActive" [(ngModel)]="user.isActive==null?'':user.isActive" binary="true"></p-checkbox>
+                                <p-message severity="error" text="IsActive is required" *ngIf="!userForm.controls['isActive'].valid&&userForm.controls['isActive'].dirty"></p-message>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <p-footer>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-5"> </div>
+                        <div class="ui-grid-col-3">
+                            <button type="button" pButton icon="fa fa-trash" (click)="Delete(userForm.value)" [disabled]="newUser" label="Delete"
+                                class="ui-button-warning"></button>
+                        </div>
+                        <div class="ui-grid-col-1"> </div>
+                        <div class="ui-grid-col-3">
+                            <button type="submit" pButton icon="fa fa-check" label="Submit" [disabled]="!userForm.valid"></button>
+                        </div>
+                    </div>
+                </p-footer>
+
+            </div>
+        </form>
+
+    </p-dialog>
+</div>
+
+<!-- Below are alerts -->
+
+<p-toast [style]="{marginTop: '80px'}"></p-toast>

@@ -1,0 +1,193 @@
+<div class="content-section implementation">
+    <p-table #dt [columns]="selectedColumns" [value]="appSettings" [columns]="cols" selectionMode="single" [(selection)]="selectedAppSetting"
+        (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10" [resizableColumns]="true" [reorderableColumns]="true"
+        [responsive]="true">
+        <ng-template pTemplate="caption">
+            List of AppSetting
+        </ng-template>
+
+        <ng-template pTemplate="caption">
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary" iconPos="left" pButton icon="fa fa-plus" (click)="showDialogToAdd()" label="Create New"></button>
+                </div>
+                <div class="col-md-3">
+                    <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columns selected"
+                        [style]="{minWidth: '200px'}" defaultLabel="Choose Columns"></p-multiSelect>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="Export To CSV" (click)="dt.exportCSV()" style="float:left"></button>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                    <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        style="width:200px">
+                </div>
+            </div>
+        </ng-template>
+
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field" pResizableColumn pReorderableColumn>
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+            </tr>
+            <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field" class="ui-fluid">
+                    <input pInputText type="text" [placeholder]="col.field" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)"
+                        [value]="dt.filters[col.field]?.value">
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData">
+                <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog header="AppSetting" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [style]="{width: '900px'}">
+
+        <form [formGroup]="appSettingForm" (ngSubmit)="onSubmit(appSettingForm.value)">
+
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+
+                <input pInputText type="hidden" formControlName="id" [(ngModel)]="appSetting.id" />
+  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="appName"> App Name* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="appName" formControlName="appName" [(ngModel)]="appSetting.appName" placeholder="Required" />
+                                <p-message severity="error" text="AppName is required" *ngIf="!appSettingForm.controls['appName'].valid&&appSettingForm.controls['appName'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="appShortName"> App Short Name :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="appShortName" formControlName="appShortName" [(ngModel)]="appSetting.appShortName" placeholder="Required" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="appVersion"> App Version :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="appVersion" formControlName="appVersion" [(ngModel)]="appSetting.appVersion" placeholder="Required" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="isToggleSidebar"> Is Toggle Sidebar* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="isToggleSidebar" id="isToggleSidebar" [(ngModel)]="appSetting.isToggleSidebar" binary="true"></p-checkbox>
+                                <p-message severity="error" text="IsToggleSidebar is required" *ngIf="!appSettingForm.controls['isToggleSidebar'].valid&&appSettingForm.controls['isToggleSidebar'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="isBoxedLayout"> Is Boxed Layout* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="isBoxedLayout" id="isBoxedLayout" [(ngModel)]="appSetting.isBoxedLayout" binary="true"></p-checkbox>
+                                <p-message severity="error" text="IsBoxedLayout is required" *ngIf="!appSettingForm.controls['isBoxedLayout'].valid&&appSettingForm.controls['isBoxedLayout'].dirty"></p-message>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="isFixedLayout"> Is Fixed Layout* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="isFixedLayout" id="isFixedLayout" [(ngModel)]="appSetting.isFixedLayout" binary="true"></p-checkbox>
+                                <p-message severity="error" text="IsFixedLayout is required" *ngIf="!appSettingForm.controls['isFixedLayout'].valid&&appSettingForm.controls['isFixedLayout'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="isToggleRightSidebar"> Is Toggle Right Sidebar* :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p-checkbox formControlName="isToggleRightSidebar" id="isToggleRightSidebar" [(ngModel)]="appSetting.isToggleRightSidebar" binary="true"></p-checkbox>
+                                <p-message severity="error" text="IsToggleRightSidebar is required" *ngIf="!appSettingForm.controls['isToggleRightSidebar'].valid&&appSettingForm.controls['isToggleRightSidebar'].dirty"></p-message>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="skin"> Skin :</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input pInputText type="text" id="skin" formControlName="skin" [(ngModel)]="appSetting.skin" placeholder="Required" />
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="footerText"> Footer Text :</label>
+                            </div>
+                            <div class="ui-grid-col-6"> 
+                                <textarea #footerText formControlName="footerText" [(ngModel)]="appSetting.footerText"></textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row crow">
+                            <div class="ui-grid-col-4">
+                                <label for="logo"> Logo:</label>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <input type="hidden" #logo11 formControlName="logo11" [(ngModel)]="appSetting.logo" />
+                                <input type="file" #logo (change)="uploadFile(logo.files)" formControlName="logo" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <p-footer>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-5"> </div>
+                        <div class="ui-grid-col-3">
+                            <button type="button" pButton icon="fa fa-trash" (click)="Delete(appSettingForm.value)" [disabled]="newAppSetting" label="Delete"
+                                class="ui-button-warning"></button>
+                        </div>
+                        <div class="ui-grid-col-1"> </div>
+                        <div class="ui-grid-col-3">
+                            <button type="submit" pButton icon="fa fa-check" label="Submit" [disabled]="!appSettingForm.valid"></button>
+                        </div>
+                    </div>
+                </p-footer>
+
+            </div>
+        </form>
+
+    </p-dialog>
+</div>
+
+<!-- Below are alerts -->
+
+<p-toast [style]="{marginTop: '80px'}"></p-toast>

@@ -1,0 +1,33 @@
+<div class="hold-transition login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <a routerLink="/"><b>NGAccounts</b></a>
+    </div> 
+    <div class="login-box-body">
+      <p class="login-box-msg">Sign in to start your session</p>
+
+      <form #form='ngForm' (ngSubmit)="onSubmit(form)">
+        <div class="form-group has-feedback">
+          <input #UserName="ngModel" name="UserName" [(ngModel)]="formModel.UserName" required class="form-control" placeholder="UserName">
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input  #Password="ngModel" name="Password" [(ngModel)]="formModel.Password" required type="password" class="form-control" placeholder="Password">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="row">  
+          <div class="col-xs-4">
+            <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-block btn-flat">Sign In</button> 
+          </div> 
+          <div class="col-xs-4" [innerHTML]="Loading"> </div>
+        </div>
+      </form> 
+      
+       
+      <a routerLink="/register" class="text-center">Register a new membership</a> 
+
+    </div>
+  
+  </div>
+</div> 
+

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NGAccounts.Data\NGAccounts.Data.csproj" />
+    <ProjectReference Include="..\NGAccounts.Repo\NGAccounts.Repo.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+
+
